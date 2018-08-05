@@ -1,0 +1,20 @@
+type SpotifyAudioFeatures {
+  danceability: Float
+  energy: Float
+  key: Int
+  loudness: Float
+  mode: Int
+  speechiness: Float
+  acousticness: Float
+  instrumentalness: Float
+  liveness: Float
+  valence: Float
+  tempo: Float
+  type: String
+  id: ID!
+  uri: String
+  track_href: String
+  analysis_url: String
+  duration_ms: Int
+  time_signature: Int
+}

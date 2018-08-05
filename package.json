@@ -10,12 +10,17 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "axios": "^0.18.0",
+    "cheerio": "^1.0.0-rc.2",
     "graphql": "^0.13.2",
     "koa": "^2.5.2",
     "koa-graphql": "^0.7.5",
     "koa-mount": "^3.0.0",
     "koa-router": "^7.4.0",
+    "lancaster-stemmer": "^1.0.2",
     "next": "^6.1.1",
+    "node-vibrant": "^3.0.0",
+    "ramda": "^0.25.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2"
   }
