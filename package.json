@@ -1,0 +1,22 @@
+{
+  "name": "docker-koa-nextjs-graphql",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "graphql": "^0.13.2",
+    "koa": "^2.5.2",
+    "koa-graphql": "^0.7.5",
+    "koa-mount": "^3.0.0",
+    "koa-router": "^7.4.0",
+    "next": "^6.1.1",
+    "react": "^16.4.2",
+    "react-dom": "^16.4.2"
+  }
+}
