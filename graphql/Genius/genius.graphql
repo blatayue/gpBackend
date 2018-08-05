@@ -2,11 +2,19 @@ type Node {
   id: ID!
 }
 type Song implements Node {
-  id: ID!
+  meta: GeniusMeta
+  response: GeniusResponse
 }
 
+type GeniusMeta {
+  status: Int
+}
+type GeniusResponse {
+  hits: [GeniusTrack]
+}
 type GeniusTrack implements Node {
   id: ID!
+  annotation_count: Int
   api_path: String!
   full_title: String
   header_image_thumbnail_url: String
