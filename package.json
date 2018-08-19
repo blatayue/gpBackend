@@ -6,19 +6,17 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js --exec babel-node",
-    "now:dev": "now --docker --public"
+    "now:dev": "now --docker --public",
+    "docker:hot-reload": "docker "
   },
   "babel": {
     "presets": [
       [
-        "env",
+        "@babel/env",
         {
           "targets": {
-            "node": "latest"
-          },
-          "include": [
-            "plugin-transform-spread"
-          ]
+            "node": "current"
+          }
         }
       ]
     ]
@@ -29,6 +27,7 @@
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "color": "^3.0.0",
+    "dataloader": "^1.4.0",
     "graphql": "^0.13.2",
     "graphql-import": "^0.6.0",
     "graphql-tools": "^3.1.1",
@@ -40,14 +39,16 @@
     "merge-graphql-schemas": "^1.5.3",
     "next": "^6.1.1",
     "node-vibrant": "^3.0.0",
+    "path": "^0.12.7",
     "ramda": "^0.25.0",
     "react": "^16.4.2",
     "react-dom": "^16.4.2"
   },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-plugin-transform-es2015-parameters": "^6.24.1",
-    "babel-preset-env": "^1.7.0",
+    "@babel/cli": "^7.0.0-beta.56",
+    "@babel/core": "^7.0.0-beta.56",
+    "@babel/plugin-transform-runtime": "^7.0.0-beta.56",
+    "@babel/preset-env": "^7.0.0-beta.56",
     "nodemon": "^1.18.3"
   }
 }
