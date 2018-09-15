@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js --exec babel-node",
     "now:dev": "now --docker --public",
-    "docker:hot-reload": "docker "
+    "docker:hot-reload": "docker run koa-graphql -p 3000:3000 --mount ./:server/src",
+    "docker:image": "docker build . --tag koa-graphql"
   },
   "babel": {
     "presets": [
@@ -21,13 +22,18 @@
       ]
     ]
   },
+  "quokka": {
+    "babel": true
+  },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "color": "^3.0.0",
+    "color-thief": "^2.2.3",
     "dataloader": "^1.4.0",
+    "get-image-colors": "^1.8.1",
     "graphql": "^0.13.2",
     "graphql-import": "^0.6.0",
     "graphql-tools": "^3.1.1",
@@ -42,13 +48,15 @@
     "path": "^0.12.7",
     "ramda": "^0.25.0",
     "react": "^16.4.2",
-    "react-dom": "^16.4.2"
+    "react-dom": "^16.4.2",
+    "winston": "^3.0.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.0.0-beta.56",
     "@babel/core": "^7.0.0-beta.56",
     "@babel/plugin-transform-runtime": "^7.0.0-beta.56",
     "@babel/preset-env": "^7.0.0-beta.56",
+    "@babel/register": "^7.0.0-rc.1",
     "nodemon": "^1.18.3"
   }
 }
