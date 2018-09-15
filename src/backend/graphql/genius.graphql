@@ -37,7 +37,7 @@ type GeniusTrack {
   fullLyrics: [String]
   frequency: [CellInfo]
   uniqueLyrics: Int
-  palette: Palette
+  palette: [String]
 }
 
 type GeniusStats {
@@ -58,15 +58,11 @@ type GeniusArtist {
   url: String
 }
 
-type Mutation {
-  searchGenius(query: String!): Song
-  generateGrid(songInput: gridReq!): [[String]]
-}
-
-input gridReq {
-  fullLyrics: [String]
-  palette: Palette
-  frequency: [CellInfo]
+type CellInfo {
+  stem: String
+  freq: Int
+  originalWords: [String]
+  indices: [Int]
 }
 
 type lyricFrequency {
@@ -74,9 +70,7 @@ type lyricFrequency {
   fullLyrics: [String]
   title: String
   uniqueLyrics: Int
-  palette: String
-  bodyColor(pathProp: ImagePath): String
-  titleTextColor(pathProp: ImagePath): String
+  palette: [String]
   grid(pathProp: ImagePath): [[String]]
 }
 
@@ -86,28 +80,28 @@ enum ImagePath {
   song_art_thumbnail_url
 }
 
-type CellInfo {
+input inputCellInfo {
   stem: String
   freq: Int
   originalWords: [String]
   indices: [Int]
 }
 
-type Pallete implements Palette {
+type Query {
+  makePlayer(query: String!): Song
+  makePalette(imagePath: String!): [String]
 }
-input Palette implements Palette {
+type Mutation {
+  searchGenius(query: String!): Song
+  generateGrid(songInput: gridReq!): [[String]]
 }
-interface Palette {
-  Vibrant: String
-  DarkVibrant: String
-  Muted: String
-  LightMuted: String
-  DarkMuted: String
+
+input gridReq {
+  fullLyrics: [String]
+  palette: [String]
+  frequency: [inputCellInfo]
 }
 
 schema {
   mutation: Mutation
-}
-type Query {
-  searchGenius(query: String!): Song
 }

@@ -3,7 +3,7 @@ import { makeExecutableSchema } from 'graphql-tools'
 import R from 'ramda'
 import { geniusQuery } from '../Genius'
 import {
-  addPalette,
+  pathPalette,
   makeColorArr,
   makeFullLyrics,
   resolveFrequency
@@ -17,34 +17,24 @@ const resolvers = {
       const geniusResponse = await geniusQuery(args.query)
       return await geniusResponse.data
     },
-    generateGrid: (_, obj) => makeColorArr(obj)
+    generateGrid: async (_, obj) => makeColorArr(obj)
   },
-  Query: {},
+  Query: {
+    makePlayer: async (_, args) => {
+      const geniusResponse = await geniusQuery(args.query)
+      return await geniusResponse.data
+    },
+    makePalette: async (_, args) => await pathPalette(args.imagePath)
+  },
   GeniusTrack: {
-    fullLyrics: R.pipe(
-      R.prop('path'),
-      R.of,
-      lyricLoader.load
-    ),
-    frequency: R.pipe(
-      R.prop('path'),
-      R.of,
-      lyricLoader.load,
-      resolveFrequency
-    ),
-    uniqueLyrics: R.pipe(
-      R.prop('path'),
-      R.of,
-      lyricLoader.load,
-      R.prop('length')
-    ),
-    palette: R.pipe(
-      R.prop('header_image_thumbnail_url'),
-      addPalette
-    )
+    fullLyrics: obj => lyricLoader.load([obj.path]),
+    frequency: obj => lyricLoader.load([obj.path]).then(resolveFrequency),
+    uniqueLyrics: async obj =>
+      lyricLoader.load([obj.path]).then(arr => arr.length),
+    palette: obj => pathPalette(obj.header_image_url)
   },
   GeniusResponse: {
-    hits: (obj, args) => R.take(args.limit)(obj.hits)
+    hits: async (obj, args) => await R.take(args.limit)(obj.hits)
   }
 }
 
