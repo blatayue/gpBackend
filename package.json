@@ -7,7 +7,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "nodemon index.js --exec babel-node",
     "now:dev": "now --docker --public",
-    "docker:hot-reload": "docker run koa-graphql -p 3000:3000 --mount ./:server/src",
+    "docker:hot-reload": "docker run koa-graphql -p 3000:3000 --mount ./:/server/src",
     "docker:image": "docker build . --tag koa-graphql"
   },
   "babel": {
