@@ -5,19 +5,22 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon index.js --exec babel-node",
+    "start": "node ./lib/index.js",
+    "build": "npx babel ./src -d ./lib",
     "now:dev": "now --docker --public",
-    "docker:hot-reload": "docker run koa-graphql -p 3000:3000 --mount ./:/server/src",
-    "docker:image": "docker build . --tag koa-graphql"
+    "docker:hot-reload": "docker run koa-graphql -p 3000:3000 --mount ./:/server/",
+    "docker:image": "docker build . --tag koa-graphql",
+    "storybook": "start-storybook -p 9001 -c ./frontend/.storybook"
   },
   "babel": {
     "presets": [
       [
-        "@babel/env",
+        "@babel/preset-env",
         {
           "targets": {
             "node": "current"
-          }
+          },
+          "useBuiltIns": "usage"
         }
       ]
     ]
@@ -28,35 +31,39 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "apollo-server": "^2.2.6",
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
-    "color": "^3.0.0",
-    "color-thief": "^2.2.3",
+    "color": "^3.1.0",
     "dataloader": "^1.4.0",
     "get-image-colors": "^1.8.1",
-    "graphql": "^0.13.2",
-    "graphql-import": "^0.6.0",
-    "graphql-tools": "^3.1.1",
-    "koa": "^2.5.2",
-    "koa-graphql": "^0.7.5",
-    "koa-mount": "^3.0.0",
+    "graphql": "^14.0.2",
+    "graphql-import": "^0.7.1",
+    "graphql-tools": "^4.0.3",
+    "koa": "^2.6.2",
+    "koa-graphql": "^0.8.0",
+    "koa-mount": "^4.0.0",
     "koa-router": "^7.4.0",
-    "lancaster-stemmer": "^1.0.2",
-    "merge-graphql-schemas": "^1.5.3",
-    "next": "^6.1.1",
-    "node-vibrant": "^3.0.0",
+    "lancaster-stemmer": "^1.0.3",
+    "merge-graphql-schemas": "^1.5.8",
+    "next": "^7.0.2",
     "path": "^0.12.7",
+    "prop-types": "^15.6.2",
     "ramda": "^0.25.0",
-    "react": "^16.4.2",
-    "react-dom": "^16.4.2",
-    "winston": "^3.0.0"
+    "react": "^16.7.0-alpha.0",
+    "react-dom": "^16.7.0-alpha.0",
+    "react-redux": "^5.1.0",
+    "winston": "^3.1.0"
   },
   "devDependencies": {
-    "@babel/cli": "^7.0.0-beta.56",
-    "@babel/core": "^7.0.0-beta.56",
-    "@babel/plugin-transform-runtime": "^7.0.0-beta.56",
-    "@babel/preset-env": "^7.0.0-beta.56",
-    "@babel/register": "^7.0.0-rc.1",
-    "nodemon": "^1.18.3"
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-transform-runtime": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/register": "^7.0.0",
+    "@storybook/addon-actions": "^4.0.11",
+    "@storybook/react": "^4.0.11",
+    "babel-loader": "^8.0.4",
+    "nodemon": "^1.18.7"
   }
 }

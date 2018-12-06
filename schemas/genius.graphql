@@ -36,10 +36,14 @@ type GeniusTrack {
   primary_artist: GeniusArtist
   fullLyrics: [String]
   frequency: [CellInfo]
-  uniqueLyrics: Int
+  # uniqueLyrics: Int
   palette: [String]
+  dataArray: [Point]
 }
-
+type Point {
+  x: Int
+  y: Int
+}
 type GeniusStats {
   hot: Boolean
   unreviewed_annotations: Int
