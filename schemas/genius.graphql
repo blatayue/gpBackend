@@ -93,10 +93,10 @@ input inputCellInfo {
 
 type Query {
   makePlayer(query: String!): Song
+  searchGenius(query: String!): Song
   makePalette(imagePath: String!): [String]
 }
 type Mutation {
-  searchGenius(query: String!): Song
   generateGrid(songInput: gridReq!): [[String]]
 }
 
@@ -107,5 +107,6 @@ input gridReq {
 }
 
 schema {
+  query: Query
   mutation: Mutation
 }

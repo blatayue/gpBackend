@@ -10,14 +10,14 @@ const lyricLoader = new DataLoader(makeFullLyrics) // Literally saves my ass soo
 
 const resolvers = {
   Mutation: {
-    searchGenius: async(_, args) => {
-      const geniusResponse = await geniusQuery(args.query)
-      return await geniusResponse.data
-    },
     generateGrid: async(_, obj) => makeColorArr(obj)
   },
   Query: {
     makePlayer: async(_, args) => {
+      const geniusResponse = await geniusQuery(args.query)
+      return await geniusResponse.data
+    },
+    searchGenius: async(_, args) => {
       const geniusResponse = await geniusQuery(args.query)
       return await geniusResponse.data
     },
@@ -27,13 +27,20 @@ const resolvers = {
     frequency: obj => lyricLoader
       .load([obj.path])
       .then(resolveFrequency),
-    // uniqueLyricCount: async obj => lyricLoader   .load([obj.path])   .then(arr =>
-    // arr.length),
+    lyricCount: async obj => lyricLoader
+      .load([obj.path])
+      .then(arr => arr.length),
     dataArray: obj => lyricLoader
       .load([obj.path])
       .then(resolveFrequency)
       .then(gatherPoints),
     fullLyrics: obj => lyricLoader.load([obj.path]),
+    fullUniqueLyrics: obj => lyricLoader
+      .load([obj.path])
+      .then(arr => [...new Set(arr)]), // get unique arr
+    fullUniqueLyricCount: obj => lyricLoader
+      .load([obj.path])
+      .then(arr => [...new Set(arr)].length),
     palette: obj => pathPalette(obj.header_image_url)
   },
   GeniusResponse: {
