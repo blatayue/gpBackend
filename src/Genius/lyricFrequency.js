@@ -68,20 +68,6 @@ export const pathPalette = async path => {
     .then(a => getColors(a.data, `image/${fileType}`)) // no base64 bs required. yet
     .then(R.map(R.invoker(0, 'hex')))
 }
-export const makeRgbArr = async({frequency, fullLyrics, palette} = obj) => {
-  const colors = R.props(['DarkVibrant', 'LightMuted', 'DarkMuted'])(palette)
-  // console.log('colors are: ', colors)
-  const grid = frequency.map(stem => {
-    let row = new Array(fullLyrics.length)
-      .fill()
-      .map(() => palette.Vibrant)
-    stem
-      .indices
-      .forEach((indice, index) => (row[indice] = colors[index % 4]))
-    return row
-  })
-  return grid
-}
 
 // I think I could make this less steps, inverting beforeprobably makes the code
 // repeat itself, but this works too
