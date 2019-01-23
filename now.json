@@ -1,7 +1,19 @@
 {
-    "version": 1,
-    "type": "docker",
-    "env": {
-        "geniusApiKey": "@geniusapikey"
+  "version": 2,
+  "builds": [
+    {
+      "src": "lib/*.js",
+      "use": "@now/node"
     }
+  ],
+  "env": {
+    "geniusApiKey": "@geniusapikey"
+  },
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "lib/index.js"
+    }
+  ],
+  "alias": "lyric.sparend.app"
 }

@@ -5,12 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node ./lib/index.js",
+    "start": "npm run-script build && npx micro ./lib/index.js",
     "build": "npx babel ./src -d ./lib",
-    "now:dev": "now --docker --public",
-    "docker:hot-reload": "docker run koa-graphql -p 3000:3000 --mount ./:/server/",
-    "docker:image": "docker build . --tag koa-graphql",
-    "storybook": "start-storybook -p 9001 -c ./frontend/.storybook"
+    "deploy": "npm run-script build && now"
   },
   "babel": {
     "presets": [
@@ -28,33 +25,31 @@
   "quokka": {
     "babel": true
   },
-  "author": "",
+  "author": "blatayue",
   "license": "ISC",
   "dependencies": {
-    "@koa/cors": "^2.2.2",
-    "apollo-server": "^2.2.6",
+    "apollo-server": "^2.3.1",
+    "apollo-server-micro": "^2.3.1",
     "axios": "^0.18.0",
     "cheerio": "^1.0.0-rc.2",
     "dataloader": "^1.4.0",
-    "get-image-colors": "^1.8.1",
-    "graphql": "^14.0.2",
-    "graphql-import": "^0.7.1",
+    "get-image-colors": "^2.0.0",
+    "graphql": "^14.1.1",
     "graphql-tools": "^4.0.3",
-    "koa": "^2.6.2",
-    "koa-graphql": "^0.8.0",
-    "koa-mount": "^4.0.0",
-    "koa-router": "^7.4.0",
     "lancaster-stemmer": "^1.0.3",
-    "merge-graphql-schemas": "^1.5.8",
-    "ramda": "^0.25.0"
+    "micro": "^9.3.3",
+    "micro-cors": "^0.1.1",
+    "microrouter": "^3.1.3",
+    "ramda": "^0.26.1",
+    "winston": "^3.1.0",
+    "winston-papertrail": "^1.0.5"
   },
   "devDependencies": {
-    "@babel/cli": "^7.2.0",
-    "@babel/core": "^7.1.2",
+    "@babel/cli": "^7.2.3",
+    "@babel/core": "^7.2.2",
     "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-env": "^7.3.1",
     "@babel/register": "^7.0.0",
-    "babel-loader": "^8.0.4",
-    "nodemon": "^1.18.7"
+    "babel-loader": "^8.0.5"
   }
 }
