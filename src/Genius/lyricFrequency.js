@@ -4,17 +4,17 @@ import axios from 'axios'
 import cheerio from 'cheerio'
 import getColors from 'get-image-colors'
 
-// I guess prettier fails gracefully here
+// chaining regex is gross, bit it works
 const parseLyrics = R.pipe(
-  R.replace(/.*(\[.*\])/gm, ''), // remove stuff like [Chorus] useful in future
-  R.replace(/\n(\n)/, ''),
-  R.replace(/\n/gm, ' '),
-  R.replace(/[!"#$%&()*+,\-./:;<=>?@[\]\^_`{|}~”“]/g, ''),
-  R.replace('\\', ''),
-  R.split(' '),
-  R.map(R.trim),
-  R.reject(R.isEmpty),
-  R.map(R.toLower),
+  R.replace(/.*(\[.*\])/gm, ''), // remove [Chorus], could actually be useful in future
+  R.replace(/\n(\n)/, ''), // for some reason there's a cap group here
+  R.replace(/\n/gm, ' '), // I gaurantee this vioates DRY, but it's fragile-ish
+  R.replace(/[!"#$%&()*+,\-./:;<=>?@[\]\^_`{|}~”“]/g, ''), // I have the bestest spec char stripping
+  R.replace('\\', ''), // for some reason these are in there sometimes
+  R.split(' '), // should make an array of words
+  R.map(R.trim), // removes extra spaces
+  R.reject(R.isEmpty), // rejects those empty words
+  R.map(R.toLower), // normalize
 )
 
 const makeFrequency = ({stemmed, lyrics}) => ({
@@ -24,7 +24,7 @@ const makeFrequency = ({stemmed, lyrics}) => ({
 
 const mapIndices = async ({freq, lyrics}) => {
   const analyzed = []
-  // Can't reduce a Map sadly, dong it by hand
+  // Can't reduce a Map sadly, doing it by hand
   freq = await freq
   await freq.forEach(async (val, stem) => {
     analyzed.push({
@@ -68,16 +68,15 @@ const uniqStemming = (freq, word) =>
       : [word.word],
   })
 
-// const getHex = R.ifElse(R.isNil, R.F, R.invoker(0, 'getHex')) dead
 export const pathPalette = async path => {
   const fileType = R.last(path.split('.'))
   return axios
     .get(path, {responseType: 'arraybuffer'})
-    .then(a => getColors(a.data, `image/${fileType}`)) // no base64 bs required. yet
+    .then(a => getColors(a.data, `image/${fileType}`))
     .then(R.map(R.invoker(0, 'hex')))
 }
 
-// I think I could make this less steps, inverting beforeprobably makes the code
+// I think I could make this less steps, inverting before probably makes the code
 // repeat itself, but this works too
 export const gatherPoints = freqArr =>
   freqArr.reduce((dataArr, freqObj, i) => {
@@ -87,23 +86,6 @@ export const gatherPoints = freqArr =>
     return dataArr
   }, [])
 
-/**
- *
- * @param {args} args
- *
- *
- * @typedef {Object} inputCellInfo
- * @property {String} stem
- * @property {number} freq
- * @property {String[]} originalWords
- * @property {number[]} indices
- *
- * @typedef {Object} args
- * @property {String[]} fullLyrics
- * @property {Object[]} inputPalette
- * @property {Object[]} inputCellInfo
- *
- */
 export const makeColorArr = async () => ({
   fullLyrics,
   inputCellInfo,
@@ -134,9 +116,4 @@ export const makeColorArr = async () => ({
   })(songAnalysis)
 
   return gridArr
-}
-
-const updateInDbAndResolve = async (song, prop, resolver) => {
-  //Some db call using song.id to update prop with resolved val
-  const resolved = resolver(song)
 }

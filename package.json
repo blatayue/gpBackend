@@ -5,9 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npm run-script build && npx micro ./lib/index.js",
+    "start": "npm run build && npx micro ./lib/index.js",
     "build": "npx babel ./src -d ./lib",
-    "deploy": "npm run-script build && now"
+    "deploy": "npm run build && now"
   },
   "babel": {
     "presets": [
