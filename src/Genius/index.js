@@ -1,8 +1,3 @@
-export { executableSchema } from './geniusResolver'
-export { geniusQuery } from './geniusQuery'
-// export {
-//   addPalette,
-//   makeColorArr,
-//   makeFullLyrics,
-//   resolveFrequency
-// } from './lyricFrequency.js'
+export {resolvers} from './geniusResolver'
+export {typeDefs} from './typeDefs'
+export {geniusQuery} from './geniusQuery'

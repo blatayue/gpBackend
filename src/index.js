@@ -1,17 +1,16 @@
-// Runs backend GraphQL server
-import graphqlHTTP from 'koa-graphql'
-import Koa from 'koa'
-import Router from 'koa-router'
-import cors from '@koa/cors'
-import {executableSchema as schema} from './Genius'
+import cors from 'micro-cors'
+import {ApolloServer} from 'apollo-server-micro'
+import {resolvers, typeDefs} from './Genius'
 
-const port = parseInt(process.env.PORT || 3001)
-const server = new Koa()
-const router = new Router()
-
-router.all('/graphql', graphqlHTTP({schema, graphiql: true, pretty: true}))
-server.use(cors())
-server.use(router.routes())
-server.listen(port, () => {
-  console.log('listening internally on port ' + port)
+const apolloServer = new ApolloServer({
+  typeDefs,
+  resolvers,
+  introspection: true,
+  playground: {
+    settings: {
+      'editor.theme': 'light',
+    },
+  },
 })
+
+module.exports = cors()(apolloServer.createHandler())
