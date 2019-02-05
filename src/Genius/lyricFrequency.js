@@ -81,35 +81,42 @@ export const pathPalette = async path => {
     .then(R.map(R.invoker(0, 'hex')))
 }
 
-export const gatherPoints = freqArr => {
-  return freqArr.reduce(async (dataArr, freqObj, i) => {
-    freqObj.indices.forEach(indice => {
-      dataArr.push({x: indice, y: i})
-    })
-    return dataArr
-  }, [])
-}
+export const gatherPoints = async freqArr =>
+  await freqArr.reduce(
+    async (dataArr, freqObj, i) => [
+      ...(await dataArr),
+      ...(await freqObj.indices.reduce(
+        async (acc, idx) => [...(await acc), {x: idx, y: i}],
+        Promise.resolve([]),
+      )),
+    ],
+    Promise.resolve([]),
+  )
 
 const sentiment = new Sentiment()
 export const makeSentiment = async lyrics => sentiment.analyze(lyrics.join(' '))
 
 // [{x: int, y: int}]
 // This is a sum of the change in height between every point
-export const makeRepetitiveScore = dataArray => {
-  const additiveAreas = dataArray.reduce(async (area, point, idx, arr) => {
-    if (idx === 0) {
-      // include initial triangle with point at 1,1
-      return Math.sqrt(2)
-    }
-    if (idx === arr.length - 1) {
-      // already factored into last area calculation
-      return area
-    } else {
-      // add average height between current point and next
-      // because width = 1 this is the same as a trapezoid area func
-      return (area += (point.y + arr[idx + 1].y) / 2)
-    }
-  }, 0)
+export const makeRepetitiveScore = async dataArray => {
+  const additiveAreas = await dataArray.reduce(
+    async (areaP, point, idx, arr) => {
+      const area = await areaP
+      if (idx === 0) {
+        // include initial triangle with point at 1,1
+        return Math.sqrt(2)
+      }
+      if (idx === arr.length - 1) {
+        // already factored into last area calculation
+        return area
+      } else {
+        // add average height between current point and next
+        // because width = 1 this is the same as a trapezoid area func
+        return (area += (point.y + arr[idx + 1].y) / 2)
+      }
+    },
+    Promise.resolve(0),
+  )
   // normalize across word count, limit between 0 and 100
   return 100 / (additiveAreas / dataArray.length)
 }
