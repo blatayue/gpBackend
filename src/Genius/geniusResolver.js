@@ -1,21 +1,18 @@
 import DataLoader from 'dataloader'
-import {makeExecutableSchema} from 'graphql-tools'
 import * as R from 'ramda'
 import {geniusQuery} from '../Genius'
 import {
   gatherPoints,
   pathPalette,
-  makeColorArr,
+  makeArea,
   makeFullLyrics,
   resolveFrequency,
+  getSentiment,
 } from './lyricFrequency'
 
-const lyricLoader = new DataLoader(makeFullLyrics) // DRY!
+const lyricLoader = new DataLoader(makeFullLyrics)
 
 export const resolvers = {
-  Mutation: {
-    generateGrid: async (_, obj) => makeColorArr(obj),
-  },
   Query: {
     makePlayer: async (_, args) => {
       const geniusResponse = await geniusQuery(args.query)
@@ -42,6 +39,13 @@ export const resolvers = {
     fullUniqueLyricCount: obj =>
       lyricLoader.load([obj.path]).then(arr => [...new Set(arr)].length),
     palette: obj => pathPalette(obj.header_image_url),
+    sentiment: obj => lyricLoader.load([obj.path]).then(getSentiment),
+    frequencyArea: obj =>
+      lyricLoader
+        .load([obj.path])
+        .then(resolveFrequency)
+        .then(gatherPoints)
+        .then(makeArea),
   },
   GeniusResponse: {
     hits: async (obj, args) => await R.take(args.limit)(obj.hits),

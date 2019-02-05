@@ -43,6 +43,16 @@ export const typeDefs = gql`
     fullUniqueLyrics: [String]
     palette: [String]
     dataArray: [Point]
+    sentiment: Sentiment
+    frequencyArea: Float
+  }
+  type Sentiment {
+    score: Int
+    comparative: Float
+    tokens: [String]
+    words: [String]
+    positive: [String]
+    negative: [String]
   }
   type Point {
     x: Int
@@ -100,18 +110,8 @@ export const typeDefs = gql`
     searchGenius(query: String!): Song
     makePalette(imagePath: String!): [String]
   }
-  type Mutation {
-    generateGrid(songInput: gridReq!): [[String]]
-  }
-
-  input gridReq {
-    fullLyrics: [String]
-    palette: [String]
-    frequency: [inputCellInfo]
-  }
 
   schema {
-    mutation: Mutation
     query: Query
   }
 `

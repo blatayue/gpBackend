@@ -3,7 +3,11 @@ import axios from 'axios'
 export const geniusQuery = async query => {
   console.log('Searching Genius for ' + query)
   try {
-    const response = axios.get('https://api.genius.com/search', {
+    // key check
+    const geniusApiKey = process.env.geniusApiKey
+    if (!geniusApiKey) throw new Error('The genius API Key is not set')
+
+    const response = await axios.get('https://api.genius.com/search', {
       params: {
         q: query,
       },
@@ -11,11 +15,16 @@ export const geniusQuery = async query => {
         Authorization: `Bearer ${process.env.geniusApiKey}`,
       },
     })
-    if ((await response).status === 401) {
-      console.log('Genius Token Has Expired')
-      return
+
+    // resp check
+    if (response.data.meta.status !== 200) {
+      throw new Error(`
+        The Genius API did not return 200 OK \n
+        ${response.data.meta}`)
     }
-    return response
+
+    // hopefully a valid response
+    return await response
   } catch (err) {
     console.error(err)
   }
