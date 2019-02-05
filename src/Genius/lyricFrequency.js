@@ -37,12 +37,12 @@ export const makeFullLyrics = async paths =>
   })
 
 const mapWithIndex = lyrics =>
-  lyrics.map((word, index) => ({
+  lyrics.map(async (word, index) => ({
     word,
     index,
     stem: stemmer(word),
   }))
-const otherReduce = (freq, word) => {
+const otherReduce = async (freq, word) => {
   // find where in the [] and obj has a stem property equal to the current word stem
   const prevObjIndex = R.findIndex(R.propEq('stem', word.stem))(freq)
   const isInFreq = prevObjIndex != -1
@@ -82,7 +82,7 @@ export const pathPalette = async path => {
 }
 
 export const gatherPoints = freqArr => {
-  return freqArr.reduce((dataArr, freqObj, i) => {
+  return freqArr.reduce(async (dataArr, freqObj, i) => {
     freqObj.indices.forEach(indice => {
       dataArr.push({x: indice, y: i})
     })
@@ -96,7 +96,7 @@ export const makeSentiment = async lyrics => sentiment.analyze(lyrics.join(' '))
 // [{x: int, y: int}]
 // This is a sum of the change in height between every point
 export const makeRepetitiveScore = dataArray => {
-  const additiveAreas = dataArray.reduce((area, point, idx, arr) => {
+  const additiveAreas = dataArray.reduce(async (area, point, idx, arr) => {
     if (idx === 0) {
       // include initial triangle with point at 1,1
       return Math.sqrt(2)
