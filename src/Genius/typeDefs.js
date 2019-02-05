@@ -44,7 +44,7 @@ export const typeDefs = gql`
     palette: [String]
     dataArray: [Point]
     sentiment: Sentiment
-    frequencyArea: Float
+    repetitiveScore: Float
   }
   type Sentiment {
     score: Int

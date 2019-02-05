@@ -91,12 +91,12 @@ export const gatherPoints = freqArr => {
 }
 
 const sentiment = new Sentiment()
-export const getSentiment = async lyrics => sentiment.analyze(lyrics.join(' '))
+export const makeSentiment = async lyrics => sentiment.analyze(lyrics.join(' '))
 
 // [{x: int, y: int}]
 // This is a sum of the change in height between every point
-export const makeArea = dataArray => {
-  return dataArray.reduce((area, point, idx, arr) => {
+export const makeRepetitiveScore = dataArray => {
+  const additiveAreas = dataArray.reduce((area, point, idx, arr) => {
     if (idx === 0) {
       // include initial triangle with point at 1,1
       return Math.sqrt(2)
@@ -110,4 +110,6 @@ export const makeArea = dataArray => {
       return (area += (point.y + arr[idx + 1].y) / 2)
     }
   }, 0)
+  // normalize across word count, limit between 0 and 100
+  return 100 / (additiveAreas / dataArray.length)
 }

@@ -4,10 +4,10 @@ import {geniusQuery} from '../Genius'
 import {
   gatherPoints,
   pathPalette,
-  makeArea,
+  makeRepetitiveScore,
   makeFullLyrics,
   resolveFrequency,
-  getSentiment,
+  makeSentiment,
 } from './lyricFrequency'
 
 const lyricLoader = new DataLoader(makeFullLyrics)
@@ -35,17 +35,19 @@ export const resolvers = {
         .then(gatherPoints),
     fullLyrics: obj => lyricLoader.load([obj.path]),
     fullUniqueLyrics: obj =>
-      lyricLoader.load([obj.path]).then(arr => [...new Set(arr)]), // get unique arr
+      lyricLoader.load([obj.path]).then(arr => [...new Set(arr)]),
     fullUniqueLyricCount: obj =>
-      lyricLoader.load([obj.path]).then(arr => [...new Set(arr)].length),
+      lyricLoader // get unique arr
+        .load([obj.path])
+        .then(arr => [...new Set(arr)].length),
     palette: obj => pathPalette(obj.header_image_url),
-    sentiment: obj => lyricLoader.load([obj.path]).then(getSentiment),
-    frequencyArea: obj =>
+    sentiment: obj => lyricLoader.load([obj.path]).then(makeSentiment),
+    repetitiveScore: obj =>
       lyricLoader
         .load([obj.path])
         .then(resolveFrequency)
         .then(gatherPoints)
-        .then(makeArea),
+        .then(makeRepetitiveScore),
   },
   GeniusResponse: {
     hits: async (obj, args) => await R.take(args.limit)(obj.hits),
