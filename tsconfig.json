@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {"*": ["types/*"]},
+    "downlevelIteration": true,
+    "lib": ["esnext"],
+    "target": "es2015",
+    "allowJs": true,
+
+    "noEmit": true,
+    "noImplicitAny": true,
+
+    "esModuleInterop": true,
+    "moduleResolution": "node"
+  }
+}

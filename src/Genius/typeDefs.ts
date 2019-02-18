@@ -105,10 +105,14 @@ export const typeDefs = gql`
     indices: [Int]
   }
 
+  type palette {
+    palette: [String]
+  }
+
   type Query {
     makePlayer(query: String!): Song
     searchGenius(query: String!): Song
-    makePalette(imagePath: String!): [String]
+    makePalette(imagePath: String!, id: Int!): palette
   }
 
   schema {
