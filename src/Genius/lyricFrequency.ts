@@ -151,19 +151,64 @@ export const makeRepetitiveScore: makeRepetitiveScore = async dataArray => {
   return additiveAreas
 }
 
-type selfSimilar = (freqMap: Map<string, freqArrObj>) => Map<number, twoDColumn>
-interface twoDColumn {
-  y: number[]
+interface binMeta {
+  pointMap: Map<number, twoDRow>
+  length: number
 }
-export const selfSimilar: selfSimilar = freqMap =>
-  Array.from(freqMap.keys()).reduce((map, freqArrObj, y) => {
-    return map.has(y)
-      ? map.set(y, similarUpdater(map.get(i)))
-      : map.set(y, similarFactory(freqArrObj))
-  }, new Map())
 
-  const similarUpdater= R.evolve({
-    y: R.append
+type selfSimilar = (words: point[]) => binMeta
+interface twoDRow {
+  x: number[]
+}
+export const selfSimilar: selfSimilar = points => ({
+  pointMap: points.reduce(
+    (map, point) =>
+      map.has(point.y)
+        ? map.set(point.y, similarUpdater(point.x)(map.get(point.y)))
+        : map.set(point.y, similarFactory(point.x)),
+    new Map(),
+  ),
+  length: Math.max(...points.map(point => point.x)),
+})
+
+const similarUpdater = (x: number) =>
+  R.evolve({
+    x: R.append(x),
   })
-  
-  
+const similarFactory = (x: number) => {
+  return {
+    x: [x],
+  }
+}
+interface yBin {
+  bin: number
+  bins: xBin[]
+}
+
+interface xBin {
+  bin: number
+}
+
+type makeBins = (similar: binMeta) => yBin[]
+
+export const makeBins: makeBins = similar =>
+  Array.from(similar.pointMap.entries()).reduce(
+    (arr: yBin[], [y, rowData]: [number, twoDRow]): yBin[] => [
+      ...arr,
+      {bin: y, bins: fillRows(similar.length, rowData.x)},
+    ],
+    [],
+  )
+
+// fills array to length then adds the data to the proper index
+// technically it starts at 1, but its a chart, so whatever
+const fillRows = (length: number, data: number[]): xBin[] =>
+  data.reduce(
+    (row: xBin[], x: number) => R.update(x - 1, {bin: x}, row),
+    new Array(length).fill({bin: 0}),
+  )
+
+const testMap = new Map().set(1, {x: [1, 2, 3]})
+
+// makeBins({length: 5, pointMap: testMap}) //?
+// [{bin: 1, bins: [1, 2, 3, 0, 0]}]

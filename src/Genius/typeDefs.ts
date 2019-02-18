@@ -45,6 +45,7 @@ export const typeDefs = gql`
     dataArray: [Point]
     sentiment: Sentiment
     repetitiveScore: Float
+    bins: [yBin]
   }
   type Sentiment {
     score: Int
@@ -90,6 +91,13 @@ export const typeDefs = gql`
     uniqueLyrics: Int
     palette: [String]
     grid(pathProp: ImagePath): [[String]]
+  }
+  type yBin {
+    bin: Int
+    bins: [xBin]
+  }
+  type xBin {
+    bin: Int
   }
 
   enum ImagePath {

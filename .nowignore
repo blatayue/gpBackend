@@ -4,3 +4,9 @@ node_modules
 .env
 logs
 .vscode
+newrelic_agent.log
+dist
+src
+.prettierrc
+newrelic.js
+Dockerfile

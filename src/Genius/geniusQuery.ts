@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export const geniusQuery = async query => {
+export const geniusQuery = async (query: string) => {
   console.log('Searching Genius for ' + query)
   try {
     // key check

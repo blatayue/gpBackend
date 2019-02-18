@@ -1,4 +1,3 @@
-require('newrelic')
 import cors from 'micro-cors'
 import {ApolloServer} from 'apollo-server-micro'
 import {resolvers, typeDefs} from './Genius'
