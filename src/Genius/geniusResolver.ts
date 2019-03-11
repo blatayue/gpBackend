@@ -8,6 +8,7 @@ import {
   resolveFrequency,
   selfSimilar,
   makeBins,
+  gatherPointsAsArray,
 } from './lyricFrequency'
 
 interface sentiment {
@@ -23,74 +24,79 @@ const lyricLoader = new DataLoader(makeFullLyrics)
 
 export const resolvers = {
   Query: {
-    makePlayer: async (_: any, args: {query: string}) => {
+    makePlayer: async (root: any, args: {query: string}) => {
       const geniusResponse = await geniusQuery(args.query)
       return await geniusResponse.data
     },
-    searchGenius: async (_: any, args: {query: string}) => {
+    searchGenius: async (root: any, args: {query: string}) => {
       const geniusResponse = await geniusQuery(args.query)
       return await geniusResponse.data
     },
-    makePalette: async (_: any, args: {imagePath: string; id: number}) =>
+    makePalette: async (root: any, args: {imagePath: string; id: number}) =>
       await pathPalette(args.imagePath, args.id),
   },
   GeniusTrack: {
-    frequency: (obj: GeniusTrack) =>
-      lyricLoader.load(obj.path).then(resolveFrequency),
-    lyricCount: (obj: GeniusTrack) =>
+    frequency: (root: GeniusTrack) =>
+      lyricLoader.load(root.path).then(resolveFrequency),
+    lyricCount: (root: GeniusTrack) =>
       lyricLoader
-        .load(obj.path)
+        .load(root.path)
         .then(
           async (sentiment: Promise<sentiment>) =>
             (await sentiment).tokens.length,
         ),
-    dataArray: (obj: GeniusTrack) =>
+    dataArray: (root: GeniusTrack) =>
       lyricLoader
-        .load(obj.path)
+        .load(root.path)
         .then(resolveFrequency)
         .then(gatherPoints),
-    fullLyrics: (obj: GeniusTrack) =>
+    smallDataArray: (root: GeniusTrack) =>
       lyricLoader
-        .load(obj.path)
+        .load(root.path)
+        .then(resolveFrequency)
+        .then(gatherPointsAsArray),
+    fullLyrics: (root: GeniusTrack) =>
+      lyricLoader
+        .load(root.path)
         .then(
           async (sentiment: Promise<sentiment>) => (await sentiment).tokens,
         ),
-    fullUniqueLyrics: (obj: GeniusTrack) =>
+    fullUniqueLyrics: (root: GeniusTrack) =>
       lyricLoader
-        .load(obj.path)
+        .load(root.path)
         .then(async (sentiment: Promise<sentiment>) => [
           ...new Set((await sentiment).tokens),
         ]),
-    fullUniqueLyricCount: (obj: GeniusTrack) =>
-      lyricLoader // get unique arr
-        .load(obj.path)
+    fullUniqueLyricCount: (root: GeniusTrack) =>
+      lyricLoader
+        .load(root.path)
         .then(
           async (sentiment: Promise<sentiment>) =>
             [...new Set((await sentiment).tokens)].length,
         ),
-    palette: (obj: GeniusTrack) => pathPalette(obj.header_image_url, obj.id),
-    sentiment: (obj: GeniusTrack) => lyricLoader.load(obj.path),
-    repetitiveScore: (obj: GeniusTrack) =>
+    palette: (root: GeniusTrack) => pathPalette(root.header_image_url, root.id),
+    sentiment: (root: GeniusTrack) => lyricLoader.load(root.path),
+    repetitiveScore: (root: GeniusTrack) =>
       lyricLoader
-        .load(obj.path)
+        .load(root.path)
         .then(resolveFrequency)
         .then(gatherPoints)
         .then(makeRepetitiveScore),
-    bins: (obj: GeniusTrack) =>
+    bins: (root: GeniusTrack) =>
       lyricLoader
-        .load(obj.path)
+        .load(root.path)
         .then(resolveFrequency)
         .then(gatherPoints)
         .then(selfSimilar)
         .then(makeBins),
   },
   GeniusResponse: {
-    hits: (obj: GeniusResponse, args: limit): GeniusHit[] =>
-      obj.hits.slice(0, args.limit),
+    hits: (root: GeniusResponse, args: limit): GeniusHit[] =>
+      root.hits.slice(0, args.limit),
   },
 }
 
-type hits = (obj: GeniusResponse, args?: limit) => GeniusHit[]
+type hits = (root: GeniusResponse, args?: limit) => GeniusHit[]
 type GeniusResponse = {
   hits: GeniusHit[]
 }

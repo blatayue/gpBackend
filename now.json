@@ -3,18 +3,25 @@
   "builds": [
     {
       "src": "lib/*.js",
-      "use": "@now/node"
+      "use": "@now/node",
+      "config": {
+        "maxLambdaSize": "20mb"
+      }
     }
   ],
   "env": {
-    "geniusApiKey": "@geniusapikey",
-    "newrelicKey": "@newrelickey"
+    "GENIUS_API_KEY": "@geniusapikey",
+    "APOLLO_ENGINE_KEY": "@apolloenginekey"
   },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "lib/index.js"
+      "dest": "lib/index.js",
+      "headers": {
+        "Cache-Control": "public, max-age=0, s-maxage=86400",
+        "Cache-Tag": "sparend"
+      }
     }
   ],
-  "alias": ["lyric.sparend.app"]
+  "alias": ["dev-lyric.sparend.app"]
 }

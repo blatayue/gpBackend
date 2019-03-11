@@ -43,6 +43,7 @@ export const typeDefs = gql`
     fullUniqueLyrics: [String]
     palette: [String]
     dataArray: [Point]
+    smallDataArray: [[Int]]
     sentiment: Sentiment
     repetitiveScore: Float
     bins: [yBin]

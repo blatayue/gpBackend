@@ -16,7 +16,6 @@ export const makeFullLyrics: makeFullLyrics = async paths =>
       const rawLyrics = cheerio
         .load(body.data)('p', '.lyrics')
         .text()
-      // console.log(sentiment.analyze(rawLyrics))
       return sentiment.analyze(rawLyrics)
     } catch (err) {
       throw err
@@ -73,6 +72,7 @@ type reduceFreqMap = (
   freqP: Promise<Map<string, freqArrObj>>,
   word: word,
 ) => Promise<Map<string, freqArrObj>>
+
 const reduceFreqMap: reduceFreqMap = async (freqP, word) => {
   const freq = await freqP
   return freq.has(word.word)
@@ -116,7 +116,7 @@ export const pathPalette = async (path: string, id: number) => {
   const fileType = R.last(path.split('.'))
   return axios
     .get(path, {responseType: 'arraybuffer'})
-    .then(res => uploadToBucket({id, buffer: res.data}))
+    .then(R.tap( async res => uploadToBucket({id, buffer: (await res).data})))
 }
 
 type gatherPoints = (freqMap: Map<string, freqArrObj>) => point[]
@@ -128,6 +128,20 @@ export const gatherPoints: gatherPoints = freqMap =>
     ],
     [],
   )
+
+  
+type gatherPointsAsArray = (freqMap: Map<string, freqArrObj>) => number[]
+
+export const gatherPointsAsArray: gatherPointsAsArray = freqMap =>
+  Array.from(freqMap.values()).reduce(
+    (dataArr: point[], freqObj, i) => [
+      ...dataArr,
+      ...freqObj.indices.reduce((acc, idx) => [...acc, [idx, i]], []),
+    ],
+    [],
+  )
+
+
 
 interface point {
   x: number
@@ -205,7 +219,7 @@ export const makeBins: makeBins = similar =>
 const fillRows = (length: number, data: number[]): xBin[] =>
   data.reduce(
     (row: xBin[], x: number) => R.update(x - 1, {bin: x}, row),
-    new Array(length).fill({bin: 0}),
+    Array(length).fill({bin: 0}),
   )
 
 const testMap = new Map().set(1, {x: [1, 2, 3]})
