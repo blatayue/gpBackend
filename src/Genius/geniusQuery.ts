@@ -1,10 +1,10 @@
 import axios from 'axios'
 
-export const geniusQuery = async query => {
+export const geniusQuery = async (query: string) => {
   console.log('Searching Genius for ' + query)
   try {
     // key check
-    const geniusApiKey = process.env.geniusApiKey
+    const geniusApiKey = process.env.GENIUS_API_KEY
     if (!geniusApiKey) throw new Error('The genius API Key is not set')
 
     const response = await axios.get('https://api.genius.com/search', {
@@ -12,7 +12,7 @@ export const geniusQuery = async query => {
         q: query,
       },
       headers: {
-        Authorization: `Bearer ${process.env.geniusApiKey}`,
+        Authorization: `Bearer ${geniusApiKey}`,
       },
     })
 
